@@ -1,0 +1,133 @@
+name: DOGE API Scraper
+
+on:
+  # Run automatically every Sunday at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * 0'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      commit_message:
+        description: 'Custom commit message (optional)'
+        required: false
+        type: string
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl jq
+        
+    - name: Set commit message
+      id: commit
+      run: |
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          echo "commit_msg=Automated weekly scrape of all DOGE endpoints" >> $GITHUB_OUTPUT
+        else
+          if [ -n "${{ github.event.inputs.commit_message }}" ]; then
+            echo "commit_msg=${{ github.event.inputs.commit_message }}" >> $GITHUB_OUTPUT
+          else
+            echo "commit_msg=Manual scrape of all DOGE endpoints" >> $GITHUB_OUTPUT
+          fi
+        fi
+        
+    - name: Make scraper executable
+      run: chmod +x scraper.sh
+      
+    - name: Run scraper for all endpoints
+      run: |
+        ENDPOINTS=("contracts" "grants" "leases" "payments")
+        
+        for endpoint in "${ENDPOINTS[@]}"; do
+          echo "🔄 Running scraper for endpoint: $endpoint"
+          
+          if bash scraper.sh "$endpoint"; then
+            echo "✅ Successfully scraped $endpoint"
+          else
+            echo "❌ Failed to scrape $endpoint"
+            exit 1
+          fi
+          
+          # Small delay between endpoints to be respectful
+          sleep 2
+        done
+        
+    - name: Validate generated data
+      run: |
+        ENDPOINTS=("contracts" "grants" "leases" "payments")
+        
+        echo "📊 Data Summary:"
+        echo "================"
+        
+        for endpoint in "${ENDPOINTS[@]}"; do
+          if [ -f "${endpoint}.json" ]; then
+            file_size=$(du -h "${endpoint}.json" | cut -f1)
+            record_count=$(jq '. | length' "${endpoint}.json")
+            echo "✅ ${endpoint}.json - Size: ${file_size}, Records: ${record_count}"
+          else
+            echo "❌ Missing: ${endpoint}.json"
+            exit 1
+          fi
+          
+          if [ -f "${endpoint}_scraper.log" ]; then
+            echo "📝 ${endpoint}_scraper.log generated"
+          else
+            echo "⚠️  Missing log: ${endpoint}_scraper.log"
+          fi
+        done
+        
+        echo ""
+        echo "📈 Total files generated: $(ls *.json *.log 2>/dev/null | wc -l)"
+        
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Commit and push changes
+      run: |
+        ENDPOINTS=("contracts" "grants" "leases" "payments")
+        
+        # Add all generated files
+        for endpoint in "${ENDPOINTS[@]}"; do
+          git add "${endpoint}.json"
+          git add "${endpoint}_scraper.log"
+        done
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "${{ steps.commit.outputs.commit_msg }}"
+          git push
+          echo "✅ Successfully committed and pushed changes"
+        fi
+        
+    - name: Create release on schedule
+      if: github.event_name == 'schedule'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: data-all-endpoints-$(date +'%Y%m%d')
+        release_name: Weekly DOGE Data - $(date +'%Y-%m-%d')
+        body: |
+          Automated weekly scrape of all DOGE API endpoints
+          
+          Generated on: $(date +'%Y-%m-%d %H:%M:%S UTC')
+          
+          Endpoints scraped:
+          - contracts.json & contracts_scraper.log
+          - grants.json & grants_scraper.log  
+          - leases.json & leases_scraper.log
+          - payments.json & payments_scraper.log
+        draft: false
+        prerelease: false
