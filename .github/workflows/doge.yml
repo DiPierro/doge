@@ -40,7 +40,7 @@ jobs:
         fi
         
     - name: Make scraper executable
-      run: chmod +x scraper.sh
+      run: chmod +x doge.sh
       
     - name: Run scraper for all endpoints
       run: |
@@ -49,7 +49,7 @@ jobs:
         for endpoint in "${ENDPOINTS[@]}"; do
           echo "🔄 Running scraper for endpoint: $endpoint"
           
-          if bash scraper.sh "$endpoint"; then
+          if bash doge.sh "$endpoint"; then
             echo "✅ Successfully scraped $endpoint"
           else
             echo "❌ Failed to scrape $endpoint"
