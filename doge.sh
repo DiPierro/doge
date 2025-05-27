@@ -183,7 +183,7 @@ done
 
 # Write the combined data to the file
 if [ -n "$all_data_combined" ]; then
-    echo "$all_data_combined" | jq 'flatten' >> "$OUTPUT_JSON"
+    echo "$all_data_combined" >> "$OUTPUT_JSON"
 fi
 
 echo "]" >> "$OUTPUT_JSON"

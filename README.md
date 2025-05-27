@@ -14,6 +14,10 @@ For example, to download all of the contracts listed at doge.gov, you can call t
 ./doge.sh contracts
 ```
 
+## Output
+
+This repository automatically scrapes all four endpoints once a week.
+
 ## Dependencies
 
 - `curl`
