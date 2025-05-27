@@ -1,0 +1,8 @@
+Tue May 27 00:34:44 UTC 2025: Starting leases scraper
+Tue May 27 00:34:44 UTC 2025: Fetching first page to determine total pages for leases endpoint...
+Tue May 27 00:34:44 UTC 2025: Found 1 total pages with 494 expected results
+Tue May 27 00:34:44 UTC 2025: Fetching data for page 1...
+Tue May 27 00:34:44 UTC 2025: Page 1: Downloaded 494 items
+Tue May 27 00:34:44 UTC 2025: Creating consolidated JSON file: leases.json
+Tue May 27 00:34:44 UTC 2025: Download completed. Downloaded 494 items (expected: 494)
+Tue May 27 00:34:44 UTC 2025: Script completed. Results saved to leases.json, logs saved to leases_scraper.log
