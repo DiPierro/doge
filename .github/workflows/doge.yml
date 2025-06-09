@@ -113,21 +113,17 @@ jobs:
         
     - name: Create release on schedule
       if: github.event_name == 'schedule'
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: data-all-endpoints-$(date +'%Y%m%d')
-        release_name: Weekly DOGE Data - $(date +'%Y-%m-%d')
+        tag_name: data-all-endpoints-${{ steps.date.outputs.date }}
+        name: Weekly DOGE Data - ${{ steps.date.outputs.formatted_date }}
         body: |
           Automated weekly scrape of all DOGE API endpoints
-          
-          Generated on: $(date +'%Y-%m-%d %H:%M:%S UTC')
-          
+          Generated on: ${{ steps.date.outputs.full_date }}
           Endpoints scraped:
           - contracts.json & contracts_scraper.log
-          - grants.json & grants_scraper.log  
+          - grants.json & grants_scraper.log
           - leases.json & leases_scraper.log
           - payments.json & payments_scraper.log
-        draft: false
-        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
