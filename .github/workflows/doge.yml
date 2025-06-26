@@ -111,15 +111,20 @@ jobs:
           echo "✅ Successfully committed and pushed changes"
         fi
         
+    - name: Set current date as env variable"=
+      run: |
+        echo "builddate=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      id: version 
+    
     - name: Create release on schedule
       if: github.event_name == 'schedule'
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: data-all-endpoints-${{ steps.date.outputs.date }}
-        name: Weekly DOGE Data - ${{ steps.date.outputs.formatted_date }}
+        tag_name: data-all-endpoints-${{ steps.version.outputs.builddate }}
+        name: Weekly DOGE Data - ${{ steps.version.outputs.builddate }}
         body: |
           Automated weekly scrape of all DOGE API endpoints
-          Generated on: ${{ steps.date.outputs.full_date }}
+          Generated on: ${{ steps.version.outputs.builddate }}
           Endpoints scraped:
           - contracts.json & contracts_scraper.log
           - grants.json & grants_scraper.log
