@@ -1,8 +1,8 @@
-Sun Aug 30 07:39:52 UTC 2026: Starting leases scraper
-Sun Aug 30 07:39:52 UTC 2026: Fetching first page to determine total pages for leases endpoint...
-Sun Aug 30 07:39:52 UTC 2026: Found 1 total pages with 264 expected results
-Sun Aug 30 07:39:52 UTC 2026: Fetching data for page 1...
-Sun Aug 30 07:39:53 UTC 2026: Page 1: Downloaded 264 items
-Sun Aug 30 07:39:53 UTC 2026: Creating consolidated JSON file: leases.json
-Sun Aug 30 07:39:53 UTC 2026: Download completed. Downloaded 264 items (expected: 264)
-Sun Aug 30 07:39:53 UTC 2026: Script completed. Results saved to leases.json, logs saved to leases_scraper.log
+Sun Sep  6 06:39:43 UTC 2026: Starting leases scraper
+Sun Sep  6 06:39:43 UTC 2026: Fetching first page to determine total pages for leases endpoint...
+Sun Sep  6 06:39:43 UTC 2026: Found 1 total pages with 264 expected results
+Sun Sep  6 06:39:43 UTC 2026: Fetching data for page 1...
+Sun Sep  6 06:39:43 UTC 2026: Page 1: Downloaded 264 items
+Sun Sep  6 06:39:43 UTC 2026: Creating consolidated JSON file: leases.json
+Sun Sep  6 06:39:43 UTC 2026: Download completed. Downloaded 264 items (expected: 264)
+Sun Sep  6 06:39:43 UTC 2026: Script completed. Results saved to leases.json, logs saved to leases_scraper.log
